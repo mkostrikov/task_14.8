@@ -1,0 +1,299 @@
+* {
+  list-style-type: none;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.page {
+  display: flex;
+  width: 1360px;
+}
+
+.main {
+  width: 816px;
+  padding: 10px 0 0;
+}
+
+.prompt {
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 1360px;
+  text-align: center;
+}
+
+/* header */
+.header,
+.footer {
+  width: 1360px;
+  padding: 0;
+  height: 100px;
+  background-color: #21825b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header__bar,
+.header__user-bar,
+.copyright,
+.address {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 70px;
+  margin: 0 30px;
+  font-size: 18px;
+}
+
+.user-login,
+.addr,
+.tel {
+  margin: 2px 0;
+}
+
+.header__button {
+  width: 150px;
+  height: 25px;
+  background-color: #fff;
+  border: solid 1px #fff;
+  margin: 2px 0;
+  border-radius: 2px;
+  font-size: 14px;
+}
+
+.header__button:hover {
+  background-color: #60d6a7;
+}
+
+.logo {
+  color: #fff;
+  font-size: 64px;
+  letter-spacing: 0.2em;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-around;
+  background-color: #fff;
+  color: #000;
+  font-size: 20px;
+}
+
+.form__input {
+  width: 200px;
+  height: 24px;
+  margin: 5px;
+  border: solid 1px #000;
+}
+
+.form__button {
+  width: 100px;
+  height: 25px;
+  margin: 5px;
+}
+
+.form__input_type_checkbox {
+  width: 15px;
+  height: 15px;
+  margin: 5px;
+  border: solid 1px #000;
+}
+
+.dialog {
+  border: 3px solid #21825b;
+  border-radius: 5px;
+}
+
+::backdrop {
+  background-color: #000;
+  opacity: 0.5;
+}
+/* /header */
+
+/* slideshow */
+.slideshow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+}
+
+.slideshow__slide {
+  width: 640px;
+  height: 426px;
+}
+
+.slideshow__switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 426px;
+  width: 40px;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+.slideshow__switch:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.slideshow__dots {
+  margin: 10px 0;
+}
+
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  border: 1px solid black;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.fade {
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.active {
+  display: block;
+}
+
+.current {
+  background-color: #ccc;
+}
+/* /slideshow */
+
+/* feedback */
+.feedback {
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 272px;
+  padding: 10px 0 0;
+}
+
+.feedback__title,
+.menu__title {
+  width: 272px;
+  padding: 0 0 0 10px;
+}
+/* /feedback */
+
+/* menu */
+.menu {
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  width: 272px;
+  padding: 10px 0 0;
+  font-size: 18px;
+}
+
+.menu__tablinks {
+  padding: 0;
+}
+
+.menu__tablink {
+  display: flex;
+  width: 272px;
+  height: 50px;
+  padding: 0 0 0 10px;
+  margin: 0;
+  align-items: center;
+  justify-content: flex-start;
+  color: black;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tablink:hover {
+  background-color: #ddd;
+}
+
+.tablink .active {
+  background-color: #ccc;
+}
+/*  */
+
+/* services */
+.services-list {
+  width: 640px;
+  padding: 0;
+  margin: 0 auto;
+  font-size: 18px;
+}
+
+.service__title {
+  margin: 0 0 10px;
+}
+
+.service__description {
+  line-height: 1.5em;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service__prices {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px 0 30px;
+}
+
+.service__price {
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 20px 10px;
+  margin: 0 5px;
+  width: 150px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+/*  */
+
+/* footer */
+.icons {
+  display: flex;
+}
+
+/*  */
