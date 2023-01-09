@@ -38,6 +38,19 @@ function showAuthDialog() {
 
 function showRegistrDialog() {
   const registrDialog = document.querySelector(".dialog_registr");
+  const registrForm = document.querySelector(".form_registr");
+  const inputLogin = document.querySelector(
+    ".form_registr .form__input_type_login"
+  );
+  const inputPassword = document.querySelector(
+    ".form_registr .form__input_type_password"
+  );
+  const inputRepeatPassword = document.querySelector(
+    ".form_registr .form__input_type_password-repeat"
+  );
+  const inputDate = document.querySelector(
+    ".form_registr .form__input_type_date"
+  );
   const closeBtn = document.querySelector(
     ".form_registr .form__button_type_close"
   );
@@ -51,11 +64,13 @@ function showRegistrDialog() {
   registrDialog.showModal();
   closeBtn.addEventListener("click", closeRegistrDialog);
   registrCheckbox.addEventListener("click", showPassword);
+  registrForm.addEventListener("submit", verifyForm);
 
   function closeRegistrDialog() {
     registrDialog.close();
     closeBtn.removeEventListener("click", closeRegistrDialog);
     registrCheckbox.removeEventListener("click", showPassword);
+    registrForm.removeEventListener("submit", verifyForm);
   }
 
   function showPassword() {
@@ -63,6 +78,61 @@ function showRegistrDialog() {
       registrPassInput.type = "text";
     } else {
       registrPassInput.type = "password";
+    }
+  }
+
+  function verifyLoginPassword(login, password, repeatPassword) {
+    if (login.length < 6) {
+      return "1";
+    } else if (login[login.length - 1] === "_") {
+      return "2";
+    } else if (/[^a-z]/i.test(login[0])) {
+      return "3";
+    } else if (/[\W]/i.test(login)) {
+      return "4";
+    } else if (password.length < 6) {
+      return "5";
+    } else if (password.length > 8) {
+      return "6";
+    } else if (/[^a-z]/i.test(password[0])) {
+      return "7";
+    } else if (/[^a-z0-9@*]/i.test(password)) {
+      return "8";
+    } else if (password !== repeatPassword) {
+      return "9";
+    }
+    return "0";
+  }
+
+  function verifyForm(event) {
+    let errors = [
+      "",
+      "Логин менее 6 символов",
+      "Логин заканчивается _",
+      "Логин начинается не с буквы",
+      "Логин содержит недопустимые символы",
+      "Пароль менее 6 символов",
+      "Пароль более 8 символов",
+      "Пароль начинается не с буквы",
+      "Пароль содержит недопустимые символы",
+      "Пароли не совпадают",
+    ];
+    let errorCode = verifyLoginPassword(
+      inputLogin.value,
+      inputPassword.value,
+      inputRepeatPassword.value
+    );
+    if (errorCode !== "0") {
+      event.preventDefault();
+      divError(errors[errorCode]);
+    }
+
+    function divError(error) {
+      let div = document.createElement("div");
+      div.className = "error";
+      div.innerHTML = `<span>${error}</span>`;
+      registrForm.append(div);
+      setTimeout(() => div.remove(), 2000);
     }
   }
 }

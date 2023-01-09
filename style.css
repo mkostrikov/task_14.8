@@ -297,3 +297,12 @@ body {
 }
 
 /*  */
+
+.error {
+  padding: 15px;
+  border: 1px solid #e9c6c6;
+  border-radius: 4px;
+  color: #763c3c;
+  background-color: #f0d8d8;
+  width: 100%;
+}
