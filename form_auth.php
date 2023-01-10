@@ -1,4 +1,4 @@
-<form action="#" method="post" class="form form_auth">
+<form action="/auth.php" method="post" class="form form_auth">
     <h1 class="form__title">Вход</h1>
     <label>
         Логин <input type="text" name="login" class="form__input form__input_type_login" autocomplete="off" required>

@@ -1,7 +1,6 @@
 <?php
-$servicesDB = file_get_contents(__DIR__ . '/services.json');
-$services = json_decode($servicesDB, true);
 require_once __DIR__ . '/func.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -17,34 +16,75 @@ require_once __DIR__ . '/func.php';
 
 <body>
     <!-- header -->
-    <?php
-    require __DIR__ . '/header/header.php';
-    ?>
+    <header class="header">
+        <div class="header__bar"></div>
+        <div class="logo">SPA</div>
+        <div class="header__user-bar">
+            <span class="user-login">Привет, <?=getCurrentUser();?>.</span>
+            <button class="header__button header__button_">Выйти</button>
+        </div>
+    </header>
     <div class="page">
         <!-- menu -->
-        <?php
-        require __DIR__ . '/menu/menu.php';
-        ?>
+        <div class="menu">
+            <h2 class="menu__title">SPA-меню</h2>
+            <ul class="menu__tablinks">
+                <?= displayTabLinks(); ?>
+            </ul>
+        </div>
         <div class="main">
             <ul class="services-list">
-                <?= displayTabContents($services) ?>
+                <?= displayTabContents(); ?>
             </ul>
             <!-- slideshow -->
-            <?php
-            require __DIR__ . '/slideshow/slideshow.php';
-            ?>
+            <section class="slideshow">
+                <div class="container">
+                    <div class="slideshow__switch slideshow__switch_prev">
+                        <a>&#10094;</a>
+                    </div>
+                    <div class="slideshow__slide fade">
+                        <img src="img/1.webp">
+                    </div>
+
+                    <div class="slideshow__slide fade">
+                        <img src="img/2.webp">
+                    </div>
+
+                    <div class="slideshow__slide fade">
+                        <img src="img/3.webp">
+                    </div>
+
+                    <div class="slideshow__switch slideshow__switch_next">
+                        <a>&#10095;</a>
+                    </div>
+                </div>
+                <div class="slideshow__dots">
+                    <span class="dot" id="0"></span>
+                    <span class="dot" id="1"></span>
+                    <span class="dot" id="2"></span>
+                </div>
+            </section>
 
         </div>
         <!-- feedback -->
-        <?php
-        require __DIR__ . '/feedback/feedback.php';
-        ?>
+        <div class="feedback">
+            <h2 class="feedback__title">Отзывы</h2>
+        </div>
     </div>
-    <?php
-    require __DIR__ . '/footer/footer.php';
-    ?>
+    <footer class="footer">
+        <div class="copyright">&#169; SPA 2023</div>
+        <div class="icons">
+            <div class="icon"><img src="img/vk.svg"></div>
+            <div class="icon"><img src="img/tg.svg"></div>
+        </div>
+        <div class="address">
+            <span class="addr">ул. Ленина, д. 1</span>
+            <span class="tel">+7(000)000-00-00</span>
+        </div>
+    </footer>
 
-    <script src="script.js"></script>
+
+    <script src="main.js"></script>
 </body>
 
 </html>

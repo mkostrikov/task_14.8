@@ -1,4 +1,4 @@
-<form action="/auth.php" method="post" class="form form_registr">
+<form action="/registr.php" method="post" class="form form_registr">
     <h1 class="form__title">Регистрация</h1>
     <p>Обязательны к заполнению <span aria-label="required">*</span></p>
     <label>
@@ -16,6 +16,6 @@
     <label>
         Дата рождения <span aria-label="required">*</span><input type="date" name="date-birthday" class="form__input form__input_type_date" min="01-01-1900" max="<?= date('m-d-Y');?>" required>
     </label>
-    <button type="submit" class="form__button form__button_type_submit">Войти</button>
+    <button type="submit" class="form__button form__button_type_submit">Зарегистрироваться</button>
     <button type="button" class="form__button form__button_type_close">Закрыть</button>
 </form>
