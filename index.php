@@ -1,5 +1,14 @@
 <?php
+
 require_once __DIR__ . '/func.php';
+
+session_start();
+
+$auth = $_SESSION['auth'] ?? null;
+
+if ($auth === true) {
+    header('Location: /main.php');
+}
 
 ?>
 
@@ -34,7 +43,7 @@ require_once __DIR__ . '/func.php';
             ?>
         </dialog>
     </header>
-    <div class="prompt">
+    <div class="alert">
         <p>Зарегистрируйтесь или Войдите, чтобы участвовать в акции по случаю дня рождения и получать индивидуальные скидки и предложения.</p>
     </div>
     <div class="page">

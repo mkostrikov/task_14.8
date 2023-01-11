@@ -1,6 +1,13 @@
 <?php
 require_once __DIR__ . '/func.php';
 
+session_start();
+
+$auth = $_SESSION['auth'] ?? null;
+if ($auth === null) {
+    header('Location: /index.php');
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -21,9 +28,19 @@ require_once __DIR__ . '/func.php';
         <div class="logo">SPA</div>
         <div class="header__user-bar">
             <span class="user-login">Привет, <?=getCurrentUser();?>.</span>
-            <button class="header__button header__button_">Выйти</button>
+            <form action="/log_off.php" method="post">
+                <button class="header__button header__button_">Выйти</button>
+            </form>
         </div>
     </header>
+    <div class="alert">
+        <?php
+        // echo $_SESSION['entrytime'] . PHP_EOL;
+        // echo date('H:i:s') . PHP_EOL;
+        echo timeLeft($_SESSION['entrytime']) . PHP_EOL;
+        
+        ?>
+    </div>
     <div class="page">
         <!-- menu -->
         <div class="menu">

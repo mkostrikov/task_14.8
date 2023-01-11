@@ -20,13 +20,6 @@ body {
   padding: 10px 0 0;
 }
 
-.prompt {
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-  width: 1360px;
-  text-align: center;
-}
-
 /* header */
 .header,
 .footer {
@@ -308,4 +301,14 @@ body {
   color: #763c3c;
   background-color: #f0d8d8;
   width: 100%;
+}
+
+.alert {
+  padding: 15px;
+  border: 1px solid #d6e9c6;
+  border-radius: 4px;
+  color: #3c763d;
+  background-color: #dff0d8;
+  width: 1360px;
+  text-align: center;
 }

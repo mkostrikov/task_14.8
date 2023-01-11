@@ -1,16 +1,19 @@
 <?php
 require_once __DIR__ . '/func.php';
 
-if (!empty($_POST)) {
-    $login = $_POST['login'];
-    $password = $_POST['password'];
-    if (checkPassword($login, $password) === true) {
-        setcookie('login', $login, 0, '/');
-        setcookie('password', $password, 0, '/');
-        header('Location: /main.php');
-    } else {
-        $error = 'Ошибка авторизации';
-        echo $error;
-        header('Refresh: 2; url=/index.php');
-    }
+
+$login = $_POST['login'];
+$password = $_POST['password'];
+if (checkPassword($login, $password) === true) {
+    session_start();
+    $_SESSION['auth'] = true;  
+    $_SESSION['login'] = $login;
+    $_SESSION['password'] = $password;
+    $_SESSION['entrytime'] = date('H:i:s');
+}
+
+$auth = $_SESSION['auth'] ?? null;
+
+if ($auth = true) {
+    header('Location: /index.php');
 }

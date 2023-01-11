@@ -19,7 +19,7 @@ function checkPassword ($login, $password):bool {
     $usersList = getUsersList ();
     if (existsUser($login) === true) {
         foreach($usersList as $user) {
-            if ($user['login'] === $login &&  $user['password'] === $password) {
+            if ($user['login'] === $login && password_verify($password, $user['password'])) {
                 return true;
             }
         }
@@ -28,10 +28,10 @@ function checkPassword ($login, $password):bool {
 }
 
 function getCurrentUser () {
-    $loginFromCookie = $_COOKIE['login'];
-    $passwordFromCookie = $_COOKIE['password'];
-    if (checkPassword($loginFromCookie, $passwordFromCookie)) {
-        return $loginFromCookie;
+    $loginFromSession = $_SESSION['login'];
+    $passwordFromSession = $_SESSION['password'];
+    if (checkPassword($loginFromSession, $passwordFromSession)) {
+        return $loginFromSession;
     }
     return null;
 }
@@ -39,10 +39,10 @@ function getCurrentUser () {
 
 function addUserToList () {
     $usersList = getUsersList();
-    $newUser = ['login' => $_POST['login'], 'password' => $_POST['password'], 'date-birthday' => $_POST['date-birthday']];
+    $newUser = ['login' => $_POST['login'], 'password' => password_hash($_POST['password'], PASSWORD_DEFAULT), 'date-birthday' => $_POST['date-birthday']];
     $usersList[] = $newUser;
     $usersListJSON = json_encode($usersList);
-    file_put_contents(__DIR__ . '/data', $usersListJSON, LOCK_EX);
+    return file_put_contents(__DIR__ . '/data', $usersListJSON, LOCK_EX);
 }
 
 // display services
@@ -103,4 +103,41 @@ function getServicePrice(array $prices)
             echo "<div class='service__price'><p>$duration часов<br> $priceFormat &#8381;</p></div>";
         }
     }
+}
+
+// promo
+function timeLeft (string $entryTime): string {
+    $currentTime = timeToSeconds(date('H:i:s'));
+    $startTime = timeToSeconds($entryTime); 
+    $dayTime = 24 * 3600;
+    $timeLeft = $startTime + $dayTime - $currentTime;
+    return secondsToTime($timeLeft);
+}
+
+function timeToSeconds (string $time): int {
+    $parts = explode(':', $time);
+    $seconds = (int) $parts[0] * 3600 + (int) $parts[1] * 60 + (int) $parts[2];
+    return $seconds;
+}
+
+function secondsToTime (int $seconds): string {
+    $h = intdiv($seconds, 3600);
+    $m = intdiv($seconds % 3600, 60);
+    $s = $seconds % 3600 % 60;
+    if ($h < 10) {
+        $strH = '0' . (string) $h;
+    } else {
+        $strH = (string) $h;
+    }
+    if ($m < 10) {
+        $strM = '0' . (string) $m;
+    } else {
+        $strM = (string) $m;
+    } 
+    if ($s < 10) {
+        $strS = '0' . (string) $s;
+    } else {
+        $strS = (string) $s;
+    }
+    return "$strH:$strM:$strS";
 }
