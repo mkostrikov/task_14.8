@@ -51,12 +51,12 @@ if ($auth === true) {
         <div class="menu">
             <h2 class="menu__title">SPA-меню</h2>
             <ul class="menu__tablinks">
-                <?= displayTabLinks(); ?>
+                <?= displayTabLinks($_SESSION['promo']); ?>
             </ul>
         </div>
         <div class="main">
             <ul class="services-list">
-                <?= displayTabContents(); ?>
+                <?php displayTabContents($_SESSION['promo']); ?>
             </ul>
             <!-- slideshow -->
             <section class="slideshow">

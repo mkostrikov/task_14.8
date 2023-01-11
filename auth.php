@@ -10,10 +10,13 @@ if (checkPassword($login, $password) === true) {
     $_SESSION['login'] = $login;
     $_SESSION['password'] = $password;
     $_SESSION['entrytime'] = date('H:i:s');
-}
+    $_SESSION['promo'] = getServiceTitle(getRandomService());
+} 
 
 $auth = $_SESSION['auth'] ?? null;
 
-if ($auth = true) {
+if ($auth === true) {
     header('Location: /index.php');
+} else {
+    header('Location: /error.php');
 }

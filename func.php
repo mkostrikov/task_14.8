@@ -1,13 +1,15 @@
 <?php
 
-function getUsersList () {
+function getUsersList()
+{
     $usersList = json_decode(file_get_contents(__DIR__ . '/data'), true);
     return $usersList;
 }
 
-function existsUser ($login):bool {
-    $usersList = getUsersList ();
-    foreach($usersList as $user) {
+function existsUser($login): bool
+{
+    $usersList = getUsersList();
+    foreach ($usersList as $user) {
         if ($user['login'] === $login) {
             return true;
         }
@@ -15,10 +17,11 @@ function existsUser ($login):bool {
     return false;
 }
 
-function checkPassword ($login, $password):bool {
-    $usersList = getUsersList ();
+function checkPassword($login, $password): bool
+{
+    $usersList = getUsersList();
     if (existsUser($login) === true) {
-        foreach($usersList as $user) {
+        foreach ($usersList as $user) {
             if ($user['login'] === $login && password_verify($password, $user['password'])) {
                 return true;
             }
@@ -27,7 +30,8 @@ function checkPassword ($login, $password):bool {
     return false;
 }
 
-function getCurrentUser () {
+function getCurrentUser()
+{
     $loginFromSession = $_SESSION['login'];
     $passwordFromSession = $_SESSION['password'];
     if (checkPassword($loginFromSession, $passwordFromSession)) {
@@ -37,7 +41,8 @@ function getCurrentUser () {
 }
 
 
-function addUserToList () {
+function addUserToList()
+{
     $usersList = getUsersList();
     $newUser = ['login' => $_POST['login'], 'password' => password_hash($_POST['password'], PASSWORD_DEFAULT), 'date-birthday' => $_POST['date-birthday']];
     $usersList[] = $newUser;
@@ -46,81 +51,119 @@ function addUserToList () {
 }
 
 // display services
-function displayTabContents()
+function displayTabContents($promo)
 {
-    $servicesDB = file_get_contents(__DIR__ . '/services');
-    $services = json_decode($servicesDB, true);
+    $services = getServices();
     foreach ($services as $service) {
+        $title = getServiceTitle($service);
         $description = $service['description'];
-        echo '<li class="services-list__item hidden">';
-        echo '<div class="service__info">';
-        echo '<div class="service__title"><h1>';
-        getServiceTitle($service);
-        echo '</h1></div>';
-        echo "<div class='service__description'><p>$description</p></div>";
-        echo '<div class="service__prices">';
-        getServicePrice($service['price-list']);
-        echo '</div>';
-        echo '</div>';
-        echo '</li>';
+        $content = <<<CNT
+                    <li class="services-list__item hidden">
+                    <div class="service__info">
+                    <div class="service__title"><h1>$title</h1></div>
+                    <div class='service__description'><p>$description</p></div>
+                    <div class="service__prices">
+                    CNT;
+        echo $content;
+        displayServicePriceList($service, $promo);
+        echo '</div></div></li>';
     }
 }
 
-// display tabLinks
-function displayTabLinks()
+function getServices()
 {
-    $servicesDB = file_get_contents(__DIR__ . '/services');
-    $services = json_decode($servicesDB, true);
-    $id = 0;
-    foreach ($services as $service) {
-        echo "<li><a class='menu__tablink' id='$id'>";
-        getServiceTitle($service);
-        echo '</a></li>';
-        $id += 1;
-    }
+    return json_decode(file_get_contents(__DIR__ . '/services'), true);
 }
 
 function getServiceTitle(array $service)
 {
-    $title = $service['title'];
-    echo "$title";
+    return $service['title'];
 }
 
-function getServicePrice(array $prices)
+function getRandomService()
 {
-    foreach ($prices as $price) {
-        $duration = (float) $price['duration'];
-        $price = (float) $price['price'];
-        $priceFormat = number_format($price, 0, '.', ',');
-        if ($duration < 1) {
-            $duration = $duration * 60;
-            echo "<div class='service__price'><p>$duration мин<br> $priceFormat &#8381;</p></div>";
-        } elseif ($duration == 1) {
-            echo "<div class='service__price'><p>$duration час<br> $priceFormat &#8381;</p></div>";
-        } elseif ($duration > 1 && $duration < 5) {
-            echo "<div class='service__price'><p>$duration часа<br> $priceFormat &#8381;</p></div>";
+    return getServices()[rand(0, count(getServices()) - 1)];
+}
+
+function displayTabLinks($promo)
+{
+    $services = getServices();
+    $id = 0;
+    foreach ($services as $service) {
+        $title = getServiceTitle($service);
+        if ($promo !== null && $title === $promo) {
+            echo "<li><a class='menu__tablink promo' id='$id'>";
+            echo getServiceTitle($service);
+            echo '</a></li>';
+            $id += 1;
         } else {
-            echo "<div class='service__price'><p>$duration часов<br> $priceFormat &#8381;</p></div>";
+            echo "<li><a class='menu__tablink' id='$id'>";
+            echo getServiceTitle($service);
+            echo '</a></li>';
+            $id += 1;  
+        }
+    }
+}
+
+function displayServicePriceList($service, $promo)
+{
+    $priceList = $service['price-list'];
+    if ($promo !== null && getServiceTitle($service) === $promo) {
+        foreach($priceList as $p) {
+            $duration = (float) $p['duration'];
+            $price = (float) $p['price'];
+            $promoPrice = (float) $p['price'] - (float) $p['price'] * 0.2;
+            $priceFormat = number_format($price, 0, '.', ',');
+            $promoPriceFormat = number_format($promoPrice, 0, '.', ',');
+            if ($duration < 1) {
+                $duration = $duration * 60;
+                echo "<div class='service__price_promo'><p><span>$duration мин</span><br> <span>$promoPriceFormat &#8381;</span><br><del>$priceFormat &#8381;</del></p></div>";
+            } elseif ($duration == 1) {
+                echo "<div class='service__price_promo'><p><span>$duration час</span><br> <span>$promoPriceFormat &#8381;</span><br><del>$priceFormat &#8381;</del></p></div>";
+            } elseif ($duration > 1 && $duration < 5) {
+                echo "<div class='service__price_promo'><p><span>$duration часа</span><br> <span>$promoPriceFormat &#8381;</span><br><del>$priceFormat &#8381;</del></p></div>";
+            } else {
+                echo "<div class='service__price_promo'><p><span>$duration часов</span><br> <span>$promoPriceFormat &#8381;</span><br><del>$priceFormat &#8381;</del></p></div>";
+            }
+        }
+    } else {
+        foreach($priceList as $p) {
+            $duration = (float) $p['duration'];
+            $price = (float) $p['price'];
+            $priceFormat = number_format($price, 0, '.', ',');
+            if ($duration < 1) {
+                $duration = $duration * 60;
+                echo "<div class='service__price'><p>$duration мин<br> $priceFormat &#8381;</p></div>";
+            } elseif ($duration == 1) {
+                echo "<div class='service__price'><p>$duration час<br> $priceFormat &#8381;</p></div>";
+            } elseif ($duration > 1 && $duration < 5) {
+                echo "<div class='service__price'><p>$duration часа<br> $priceFormat &#8381;</p></div>";
+            } else {
+                echo "<div class='service__price'><p>$duration часов<br> $priceFormat &#8381;</p></div>";
+            }
         }
     }
 }
 
 // promo
-function timeLeft (string $entryTime): string {
+function timeLeft(string $entryTime): int
+{
     $currentTime = timeToSeconds(date('H:i:s'));
-    $startTime = timeToSeconds($entryTime); 
+    $startTime = timeToSeconds($entryTime);
     $dayTime = 24 * 3600;
     $timeLeft = $startTime + $dayTime - $currentTime;
-    return secondsToTime($timeLeft);
+    return $timeLeft;
 }
 
-function timeToSeconds (string $time): int {
+function timeToSeconds(string $time): int
+{
     $parts = explode(':', $time);
     $seconds = (int) $parts[0] * 3600 + (int) $parts[1] * 60 + (int) $parts[2];
     return $seconds;
 }
 
-function secondsToTime (int $seconds): string {
+function secondsToTime(int $seconds): string
+{
     $h = intdiv($seconds, 3600);
     $m = intdiv($seconds % 3600, 60);
     $s = $seconds % 3600 % 60;
@@ -133,7 +176,7 @@ function secondsToTime (int $seconds): string {
         $strM = '0' . (string) $m;
     } else {
         $strM = (string) $m;
-    } 
+    }
     if ($s < 10) {
         $strS = '0' . (string) $s;
     } else {

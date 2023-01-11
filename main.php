@@ -37,7 +37,9 @@ if ($auth === null) {
         <?php
         // echo $_SESSION['entrytime'] . PHP_EOL;
         // echo date('H:i:s') . PHP_EOL;
-        echo timeLeft($_SESSION['entrytime']) . PHP_EOL;
+        if (timeLeft($_SESSION['entrytime']) > 0) {
+            echo 'АКЦИЯ' . PHP_EOL . $_SESSION['promo'] . PHP_EOL . '-20%' . PHP_EOL . 'До окончания АКЦИИ осталось:' . PHP_EOL . secondsToTime(timeLeft($_SESSION['entrytime'])) . PHP_EOL;
+        }
         
         ?>
     </div>
@@ -46,12 +48,12 @@ if ($auth === null) {
         <div class="menu">
             <h2 class="menu__title">SPA-меню</h2>
             <ul class="menu__tablinks">
-                <?= displayTabLinks(); ?>
+                <?= displayTabLinks($_SESSION['promo']); ?>
             </ul>
         </div>
         <div class="main">
             <ul class="services-list">
-                <?= displayTabContents(); ?>
+                <?= displayTabContents($_SESSION['promo']); ?>
             </ul>
             <!-- slideshow -->
             <section class="slideshow">
