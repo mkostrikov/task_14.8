@@ -86,10 +86,9 @@ function numDayInYear($date)
     return $numDay;
 }
 
-function addUserToList()
+function addUserToList($newUser)
 {
     $usersList = getUsersList();
-    $newUser = ['login' => $_POST['login'], 'password' => password_hash($_POST['password'], PASSWORD_DEFAULT), 'date-birthday' => $_POST['date-birthday']];
     $usersList[] = $newUser;
     $usersListJSON = json_encode($usersList);
     return file_put_contents(__DIR__ . '/data', $usersListJSON, LOCK_EX);

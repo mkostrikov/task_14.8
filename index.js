@@ -104,6 +104,57 @@ function showRegistrDialog() {
     return "0";
   }
 
+  function verifyDateBithday() {
+    let dateBithday = inputDate.value;
+    let [year, month, day] = dateBithday.split("-");
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    const currentDay = currentDate.getDate();
+
+    if (Number(year) === currentYear) {
+      if (Number(month) - 1 > currentMonth || Number(day) > currentDay) {
+        return false;
+      }
+    }
+    if (Number(year) < 1900 || Number(year) > currentYear) {
+      return false;
+    }
+    if (Number(month) - 1 < 0 || Number(month) - 1 > 11) {
+      return false;
+    }
+    if (Number(day) < 1) {
+      return false;
+    }
+    if (Number(month) === 1) {
+      if (currentYear % 4 === 0) {
+        if (Number(day) > 29) {
+          return false;
+        }
+      } else {
+        if (Number(day) > 28) {
+          return false;
+        }
+      }
+    }
+    if (
+      Number(month) === 3 ||
+      Number(month) === 5 ||
+      Number(month) === 8 ||
+      Number(month) === 10
+    ) {
+      if (Number(day) > 30) {
+        return false;
+      }
+    } else {
+      if (Number(day) > 31) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   function verifyForm(event) {
     let errors = [
       "",
@@ -126,14 +177,18 @@ function showRegistrDialog() {
       event.preventDefault();
       divError(errors[errorCode]);
     }
-
-    function divError(error) {
-      let div = document.createElement("div");
-      div.className = "error";
-      div.innerHTML = `<span>${error}</span>`;
-      registrForm.append(div);
-      setTimeout(() => div.remove(), 2000);
+    if (verifyDateBithday() === false) {
+      event.preventDefault();
+      divError("Неверная дата");
     }
+  }
+
+  function divError(error) {
+    let div = document.createElement("div");
+    div.className = "error";
+    div.innerHTML = `<span>${error}</span>`;
+    registrForm.append(div);
+    setTimeout(() => div.remove(), 2000);
   }
 }
 
