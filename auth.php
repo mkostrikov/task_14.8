@@ -4,6 +4,7 @@ require_once __DIR__ . '/func.php';
 
 $login = $_POST['login'];
 $password = $_POST['password'];
+
 if (checkPassword($login, $password) === true) {
     session_start();
     $_SESSION['auth'] = true;  
@@ -11,6 +12,8 @@ if (checkPassword($login, $password) === true) {
     $_SESSION['password'] = $password;
     $_SESSION['entrytime'] = date('H:i:s');
     $_SESSION['promo'] = getServiceTitle(getRandomService());
+    $_SESSION['bithdayDate'] = getUserBithdayDate();
+    $_SESSION['checkBithday'] = checkBithday($_SESSION['bithdayDate']);
 } 
 
 $auth = $_SESSION['auth'] ?? null;

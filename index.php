@@ -51,12 +51,12 @@ if ($auth === true) {
         <div class="menu">
             <h2 class="menu__title">SPA-меню</h2>
             <ul class="menu__tablinks">
-                <?= displayTabLinks($_SESSION['promo']); ?>
+                <?= displayTabLinks($_SESSION['promo'], $_SESSION['checkBithday']); ?>
             </ul>
         </div>
         <div class="main">
             <ul class="services-list">
-                <?php displayTabContents($_SESSION['promo']); ?>
+                <?php displayTabContents($_SESSION['promo'], $_SESSION['checkBithday']); ?>
             </ul>
             <!-- slideshow -->
             <section class="slideshow">
@@ -88,10 +88,8 @@ if ($auth === true) {
             </section>
 
         </div>
-        <!-- feedback -->
-        <div class="feedback">
-            <h2 class="feedback__title">Отзывы</h2>
-        </div>
+        <!-- left-bar -->
+        <div class="left-bar"></div>
     </div>
     <footer class="footer">
         <div class="copyright">&#169; SPA 2023</div>

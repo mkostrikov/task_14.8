@@ -40,6 +40,51 @@ function getCurrentUser()
     return null;
 }
 
+function getUserBithdayDate()
+{
+    $usersList = getUsersList();
+    foreach ($usersList as $user) {
+        if (getCurrentUser() === $user['login']) {
+            return substr($user['date-birthday'], 5);
+        }
+    }
+}
+
+function checkBithday($bithday): bool
+{
+    if (substr(date('Y-m-d'), 5) === $bithday) {
+        return true;
+    }
+    return false;
+}
+
+function daysBeforeBithday($bithday)
+{
+    $numBithday = numDayInYear($bithday);
+    $numToday = numDayInYear(date('m-d'));
+    if ($numBithday > $numToday) {
+        $daysBeforeBithday = $numBithday - $numToday;
+        return $daysBeforeBithday;
+    }
+    return false;
+}
+
+function numDayInYear($date)
+{
+    $currentYear = (int) date('Y');
+    if ($currentYear % 4 === 0) {
+        $daysInMonths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    } else {
+        $daysInMonths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    }
+    $monthAndDay = (explode('-', $date));
+    $sumDaysInMonth = 0;
+    for ($i = 1; $i < (int) $monthAndDay[0]; $i += 1) {
+        $sumDaysInMonth += $daysInMonths[$i - 1];
+    }
+    $numDay = $sumDaysInMonth + (int) $monthAndDay[1];
+    return $numDay;
+}
 
 function addUserToList()
 {
@@ -51,7 +96,7 @@ function addUserToList()
 }
 
 // display services
-function displayTabContents($promo)
+function displayTabContents($promo, $checkBithday)
 {
     $services = getServices();
     foreach ($services as $service) {
@@ -65,7 +110,7 @@ function displayTabContents($promo)
                     <div class="service__prices">
                     CNT;
         echo $content;
-        displayServicePriceList($service, $promo);
+        displayServicePriceList($service, $promo, $checkBithday);
         echo '</div></div></li>';
     }
 }
@@ -85,61 +130,85 @@ function getRandomService()
     return getServices()[rand(0, count(getServices()) - 1)];
 }
 
-function displayTabLinks($promo)
+function displayTabLinks($promo, $checkBithday)
 {
     $services = getServices();
     $id = 0;
     foreach ($services as $service) {
         $title = getServiceTitle($service);
         if ($promo !== null && $title === $promo) {
-            echo "<li><a class='menu__tablink promo' id='$id'>";
+            if ($checkBithday === true) {
+                $aClass = 'promo_bithday';
+            } else {
+                $aClass = 'promo';
+            }
+            echo "<li><a class='menu__tablink $aClass' id='$id'>";
             echo getServiceTitle($service);
             echo '</a></li>';
             $id += 1;
         } else {
-            echo "<li><a class='menu__tablink' id='$id'>";
+            if ($checkBithday === true) {
+                $aClass = 'bithday';
+            } else {
+                $aClass = '';
+            }
+            echo "<li><a class='menu__tablink $aClass' id='$id'>";
             echo getServiceTitle($service);
             echo '</a></li>';
-            $id += 1;  
+            $id += 1;
         }
     }
 }
 
-function displayServicePriceList($service, $promo)
+function displayServicePriceList($service, $promo, $checkBithday)
 {
     $priceList = $service['price-list'];
     if ($promo !== null && getServiceTitle($service) === $promo) {
-        foreach($priceList as $p) {
+        if ($checkBithday === true) {
+            $k = 0.2 + 0.05;
+            $divClass = 'service__price_promo_bithday';
+        } else {
+            $k = 0.2;
+            $divClass = 'service__price_promo';
+        }
+        foreach ($priceList as $p) {
             $duration = (float) $p['duration'];
             $price = (float) $p['price'];
-            $promoPrice = (float) $p['price'] - (float) $p['price'] * 0.2;
+            $promoPrice = (float) $p['price'] - (float) $p['price'] * $k;
             $priceFormat = number_format($price, 0, '.', ',');
             $promoPriceFormat = number_format($promoPrice, 0, '.', ',');
             if ($duration < 1) {
                 $duration = $duration * 60;
-                echo "<div class='service__price_promo'><p><span>$duration мин</span><br> <span>$promoPriceFormat &#8381;</span><br><del>$priceFormat &#8381;</del></p></div>";
+                echo "<div class=$divClass><p><span>$duration мин</span><br> <span>$promoPriceFormat &#8381;</span><br></p></div>";
             } elseif ($duration == 1) {
-                echo "<div class='service__price_promo'><p><span>$duration час</span><br> <span>$promoPriceFormat &#8381;</span><br><del>$priceFormat &#8381;</del></p></div>";
+                echo "<div class=$divClass><p><span>$duration час</span><br> <span>$promoPriceFormat &#8381;</span><br></p></div>";
             } elseif ($duration > 1 && $duration < 5) {
-                echo "<div class='service__price_promo'><p><span>$duration часа</span><br> <span>$promoPriceFormat &#8381;</span><br><del>$priceFormat &#8381;</del></p></div>";
+                echo "<div class=$divClass><p><span>$duration часа</span><br> <span>$promoPriceFormat &#8381;</span></p></div>";
             } else {
-                echo "<div class='service__price_promo'><p><span>$duration часов</span><br> <span>$promoPriceFormat &#8381;</span><br><del>$priceFormat &#8381;</del></p></div>";
+                echo "<div class=$divClass><p><span>$duration часов</span><br> <span>$promoPriceFormat &#8381;</span></p></div>";
             }
         }
     } else {
-        foreach($priceList as $p) {
+        if ($checkBithday === true) {
+            $k = 0.05;
+            $divClass = 'service__price_bithday';
+        } else {
+            $k = 0;
+            $divClass = 'service__price';
+        }
+        foreach ($priceList as $p) {
             $duration = (float) $p['duration'];
-            $price = (float) $p['price'];
+            $price = (float) $p['price'] - (float) $p['price'] * $k;
             $priceFormat = number_format($price, 0, '.', ',');
             if ($duration < 1) {
                 $duration = $duration * 60;
-                echo "<div class='service__price'><p>$duration мин<br> $priceFormat &#8381;</p></div>";
+                echo "<div class=$divClass><p>$duration мин<br> $priceFormat &#8381;</p></div>";
             } elseif ($duration == 1) {
-                echo "<div class='service__price'><p>$duration час<br> $priceFormat &#8381;</p></div>";
+                echo "<div class=$divClass><p>$duration час<br> $priceFormat &#8381;</p></div>";
             } elseif ($duration > 1 && $duration < 5) {
-                echo "<div class='service__price'><p>$duration часа<br> $priceFormat &#8381;</p></div>";
+                echo "<div class=$divClass><p>$duration часа<br> $priceFormat &#8381;</p></div>";
             } else {
-                echo "<div class='service__price'><p>$duration часов<br> $priceFormat &#8381;</p></div>";
+                echo "<div class=$divClass><p>$duration часов<br> $priceFormat &#8381;</p></div>";
             }
         }
     }
@@ -149,9 +218,8 @@ function displayServicePriceList($service, $promo)
 function timeLeft(string $entryTime): int
 {
     $currentTime = timeToSeconds(date('H:i:s'));
-    $startTime = timeToSeconds($entryTime);
-    $dayTime = 24 * 3600;
-    $timeLeft = $startTime + $dayTime - $currentTime;
+    $startTime = timeToSeconds($entryTime) + 86400;
+    $timeLeft = $startTime - $currentTime;
     return $timeLeft;
 }
 

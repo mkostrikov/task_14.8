@@ -27,7 +27,17 @@ if ($auth === null) {
         <div class="header__bar"></div>
         <div class="logo">SPA</div>
         <div class="header__user-bar">
-            <span class="user-login">Привет, <?=getCurrentUser();?>.</span>
+            <span class="user-login">Привет, <?= getCurrentUser(); ?>.</span>
+            <span class="bithday-info">
+                <?php
+                if ($_SESSION['checkBithday']) {
+                    echo 'С днем рождения!' . PHP_EOL;
+                }
+                if (daysBeforeBithday($_SESSION['bithdayDate'])) {
+                    echo 'До дня рождения осталось ' . daysBeforeBithday($_SESSION['bithdayDate']) . ' дней';
+                }
+                ?>
+            </span>
             <form action="/log_off.php" method="post">
                 <button class="header__button header__button_">Выйти</button>
             </form>
@@ -38,9 +48,12 @@ if ($auth === null) {
         // echo $_SESSION['entrytime'] . PHP_EOL;
         // echo date('H:i:s') . PHP_EOL;
         if (timeLeft($_SESSION['entrytime']) > 0) {
-            echo 'АКЦИЯ' . PHP_EOL . $_SESSION['promo'] . PHP_EOL . '-20%' . PHP_EOL . 'До окончания АКЦИИ осталось:' . PHP_EOL . secondsToTime(timeLeft($_SESSION['entrytime'])) . PHP_EOL;
+            echo '<p class="action">АКЦИЯ' . PHP_EOL . $_SESSION['promo'] . PHP_EOL . '-20%.' . PHP_EOL . 'До окончания АКЦИИ осталось:' . PHP_EOL . secondsToTime(timeLeft($_SESSION['entrytime'])) . '</p>';
         }
-        
+        echo '<br>';
+        if ($_SESSION['checkBithday']) {
+            echo '<p class="action">АКЦИЯ В ДЕНЬ РОЖДЕНИЯ -5% НА ВСЁ</p>';
+        }
         ?>
     </div>
     <div class="page">
@@ -48,12 +61,12 @@ if ($auth === null) {
         <div class="menu">
             <h2 class="menu__title">SPA-меню</h2>
             <ul class="menu__tablinks">
-                <?= displayTabLinks($_SESSION['promo']); ?>
+                <?= displayTabLinks($_SESSION['promo'], $_SESSION['checkBithday']); ?>
             </ul>
         </div>
         <div class="main">
             <ul class="services-list">
-                <?= displayTabContents($_SESSION['promo']); ?>
+                <?= displayTabContents($_SESSION['promo'], $_SESSION['checkBithday']); ?>
             </ul>
             <!-- slideshow -->
             <section class="slideshow">
@@ -85,10 +98,8 @@ if ($auth === null) {
             </section>
 
         </div>
-        <!-- feedback -->
-        <div class="feedback">
-            <h2 class="feedback__title">Отзывы</h2>
-        </div>
+        <!-- left-bar -->
+        <div class="left-bar"></div>
     </div>
     <footer class="footer">
         <div class="copyright">&#169; SPA 2023</div>
